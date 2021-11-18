@@ -20,7 +20,7 @@ some_parser.draw_railroad_to_png({}, "test.png")
 """
 
 from itertools import chain
-from parcon import ordered_dict
+import collections
 
 PRODUCTION = 1
 TEXT = 2
@@ -146,14 +146,14 @@ class Railroadable(object):
         raise NotImplementedError
     
     def get_productions(self):
-        map = ordered_dict.OrderedDict()
+        map = collections.OrderedDict()
         visited = set()
         self._list_productions(map, visited)
         # TODO: in the future, check that each possible result for a given
         # production generates a railroad that means syntactically the same
         # thing. For now, we're just going to use the first one in the list.
-        return ordered_dict.OrderedDict([(k, v[0]) for k, v in map.items()])
-    
+        return collections.OrderedDict([(k, v[0]) for k, v in map.items()])
+
     def _list_productions(self, map, visited):
         if self in visited: # Already visited this object
             return
@@ -201,7 +201,7 @@ class Railroadable(object):
                 del productions[name]
                 productions[name] = value
         from parcon.railroad import raildraw as _raildraw
-        _raildraw.draw_to_image(img_type, ordered_dict.OrderedDict([(k,
+        _raildraw.draw_to_image(img_type, collections.OrderedDict([(k,
             Then(Bullet(), v.create_railroad(options), Bullet()))
             for k, v in productions.items()]), options, filename)
         del _raildraw
@@ -217,42 +217,3 @@ def ensure_railroadable(value):
 def create_railroad(value, options):
     ensure_railroadable(value)
     return value.create_railroad(options)
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
